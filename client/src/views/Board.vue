@@ -1,4 +1,4 @@
-<template>
+<template v-on:keyup.space="damage">
   <div class="container-fluid">
     <div class="row">
       <div class="col-1">
@@ -64,14 +64,14 @@
 
       <div class="col-1">
 
-        <h3 class="text-center pt-3">{{ players.playerB.health }} %</h3>
+        <h3 class="text-center pt-3">{{ health }} %</h3>
         <div class="health-bar" style="right: -200px;">
           <div class="progress">
             <div
               :class="`progress-bar bg-${status.playerB} rounded`"
               role="progressbar"
-              :style="`width: ${players.playerB.health}%;`"
-              :aria-valuenow="players.playerB.health"
+              :style="`width: ${health}%;`"
+              :aria-valuenow="health"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -88,15 +88,16 @@ export default {
   name: 'Board',
   data () {
     return {
-      isPressed: false
+      isPressed: false,
+      health: null
     }
   },
   computed: {
     status () {
-      const { playerA, playerB } = this.players
+      const { playerA } = this.players
       return {
         playerA: this.getStatus(playerA.health),
-        playerB: this.getStatus(playerB.health)
+        playerB: this.getStatus(this.health)
       }
     },
     players () {
@@ -135,10 +136,15 @@ export default {
     },
     hit () {
       this.isPressed = true
-
       setTimeout(() => {
         this.isPressed = false
       }, 500)
+      this.$socket.emit('sendHealth')
+    }
+  },
+  sockets: {
+    sendHealth (data) {
+      this.health = data
     }
   }
 }

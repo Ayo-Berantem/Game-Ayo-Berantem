@@ -48,6 +48,9 @@
               <h1 v-if="users[1]">
                 {{ users[1].username }}
               </h1>
+              <h3 v-else>
+                Waiting user...
+              </h3>
 
               <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
 

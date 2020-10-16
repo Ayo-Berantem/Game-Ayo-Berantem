@@ -18,6 +18,7 @@
 
 <script>
 export default {
+<<<<<<< HEAD
   name: "Login",
   data() {
     return {
@@ -35,6 +36,26 @@ export default {
     },
   },
 };
+=======
+  name: 'Login',
+  data () {
+    return {
+      username: ''
+    }
+  },
+  methods: {
+    submitUsername () {
+      const payload = {
+        username: this.username,
+        health: 100
+      }
+      this.$socket.emit('userConnect', payload)
+      localStorage.setItem('username', this.username)
+      this.$router.push({ name: 'Home' })
+    }
+  }
+}
+>>>>>>> 23a4d2537d4f1df8d487bbf66eebd7b750dbd3c3
 </script>
 
 <style>

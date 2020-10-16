@@ -1,16 +1,16 @@
-<template v-on:keyup.space="damage">
+<template>
   <div class="container-fluid">
     <div class="row">
       <div class="col-1">
 
-        <h3 class="text-center pt-3">{{ users[0].health }} %</h3>
+        <h3 class="text-center pt-3">{{ players.playerA.health }} %</h3>
         <div class="health-bar" style="left: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${getStatus(users[0].health)} rounded`"
+              :class="`progress-bar bg-${getStatus(players.playerA.health)} rounded`"
               role="progressbar"
-              :style="`width: ${users[0].health}%;`"
-              :aria-valuenow="users[0].health"
+              :style="`width: ${players.playerA.health}%;`"
+              :aria-valuenow="players.playerA.health"
               aria-valuemin="0"
               aria-valuemax="100"
 
@@ -26,10 +26,11 @@
 
             <div class="col-4 text-center">
               <h1>
-                {{ users[0].username }}
+                {{ players.playerA.name }}
               </h1>
 
-              <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
+
+              <img src="../assets/logo.png" alt="profile" :class="`rounded img-thumbnail my-5 ${hitAnimation}`">
 
               <button
                 class="btn btn-outline-info btn-lg btn-block"
@@ -45,9 +46,12 @@
               </h1>
             </div>
             <div class="col-4 text-center">
-              <h1 v-if="users[1]">
-                {{ users[1].username }}
+              <h1 v-if="players.playerB.name">
+                {{ players.playerB.name }}
               </h1>
+              <h3 v-else>
+                Waiting for B Player...
+              </h3>
 
               <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
 
@@ -62,16 +66,16 @@
         </div>
       </div>
 
-      <div v-if="users[1]" class="col-1">
+      <div class="col-1">
 
-        <h3 class="text-center pt-3">{{ users[1].health }} %</h3>
+        <h3 class="text-center pt-3">{{ players.playerB.health }} %</h3>
         <div class="health-bar" style="right: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${getStatus(users[1].health)} rounded`"
+              :class="`progress-bar bg-${getStatus(players.playerB.health)} rounded`"
               role="progressbar"
-              :style="`width: ${users[1].health}%;`"
-              :aria-valuenow="users[1].health"
+              :style="`width: ${players.playerB.health}%;`"
+              :aria-valuenow="players.playerB.health"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -84,46 +88,41 @@
 </template>
 
 <script>
-import PlayersBoard from '@/components/PlayersBoard'
-import RoomFull from '@/components/RoomFull'
-
 export default {
-  name: 'Board',
+  name: 'PlayersBoard',
   data () {
     return {
-      isPressed: false,
-      username: ''
+      isPressed: false
+    }
+  },
+  computed: {
+    players () {
+      return this.$store.state.players
+    },
+    hitAnimation () {
+      const animations = ['vibrate-3', 'heartbeat', 'shake-horizontal', 'blink-1']
+      const randomAnimation = animations[Math.floor(Math.random() * animations.length)]
+      return this.isPressed ? randomAnimation : ''
     }
   },
   created () {
-    this.username = localStorage.getItem('username')
-    const payload = {
-        username: this.username,
-        health: 100
-      }
-    this.$socket.emit('userConnect', payload)
-    window.addEventListener('keydown', e => {
+    window.addEventListener("keydown", e => {
       e.preventDefault()
 
-      if (!this.isPressed) {
-        console.log(e.keyCode)
+      if(!this.isPressed){
+        this.isPressed = true
+
         if (e.keyCode === 32) {
           this.hit()
         }
       }
     })
 
-    window.addEventListener('keyup', e => {
+    window.addEventListener("keyup", e => {
       e.preventDefault()
-      if (e.keyCode === 32) {
-        this.isPressed = false
-      }
+
+      this.isPressed = false
     })
-  },
-  computed: {
-    users () {
-      return this.$store.state.users
-    }
   },
   methods: {
     getStatus (number) {
@@ -137,20 +136,11 @@ export default {
 
       return 'danger'
     },
-    hit (payload) {
-      this.isPressed = true
-
-      console.log(this.users)
-
-      let temp = this.users.filter(el => {
-        return el.username == this.username
-      })
-      this.$socket.emit('sendHealth', temp[0])
+    hit () {
+      if (this.isPressed) {
+        this.players.playerB.health--
+      }
     }
   }
 }
 </script>
-
-<style>
-
-</style>

@@ -18,23 +18,24 @@
 
 <script>
 export default {
-  name: "Login",
-  data() {
+  name: 'Login',
+  data () {
     return {
-      username: "",
-    };
+      username: ''
+    }
   },
   methods: {
-    submitUsername() {
-      const paylaod = {
+    submitUsername () {
+      const payload = {
         username: this.username,
-      };
-      this.$socket.emit("user-connect", paylaod);
-      localStorage.setItem("username", this.username);
-      this.$router.push({ name: "Home" });
-    },
-  },
-};
+        health: 100
+      }
+      this.$socket.emit('userConnect', payload)
+      localStorage.setItem('username', this.username)
+      this.$router.push({ name: "Board" })
+    }
+  }
+}
 </script>
 
 <style>

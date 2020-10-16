@@ -3,10 +3,18 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <router-link to="/board">Board</router-link>
     </div>
     <router-view/>
   </div>
 </template>
+
+<script>
+import './assets/style.css'
+export default {
+  name: 'App'
+}
+</script>
 
 <style>
 #app {

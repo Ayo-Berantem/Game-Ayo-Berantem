@@ -10,8 +10,18 @@ app.use(cors())
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 
+let users = []
+
 io.on('connection', (socket) => {
     console.log('a user connected');
+
+    socket.on('user-connect', (data)=>{
+        console.log('someone connected');
+        console.log(data);
+        users.push(data)
+
+        io.emit('user-connected', users)
+    })
 })
 
 http.listen(port, () => console.log(`I love you ${port}`))

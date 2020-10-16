@@ -3,14 +3,14 @@
     <div class="row">
       <div class="col-1">
 
-        <h3 class="text-center pt-3">{{ players.playerA.health }} %</h3>
+        <h3 class="text-center pt-3">{{ users[0].health }} %</h3>
         <div class="health-bar" style="left: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${getStatus(players.playerA.health)} rounded`"
+              :class="`progress-bar bg-${getStatus(users[0].health)} rounded`"
               role="progressbar"
-              :style="`width: ${players.playerA.health}%;`"
-              :aria-valuenow="players.playerA.health"
+              :style="`width: ${users[0].health}%;`"
+              :aria-valuenow="users[0].health"
               aria-valuemin="0"
               aria-valuemax="100"
 
@@ -26,7 +26,7 @@
 
             <div class="col-4 text-center">
               <h1>
-                {{ playerA.name }}
+                {{ users[0].username }}
               </h1>
 
               <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
@@ -45,8 +45,8 @@
               </h1>
             </div>
             <div class="col-4 text-center">
-              <h1>
-                {{ playerB.name }}
+              <h1 v-if="users[1]">
+                {{ users[1].username }}
               </h1>
 
               <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
@@ -62,16 +62,16 @@
         </div>
       </div>
 
-      <div class="col-1">
+      <div v-if="users[1]" class="col-1">
 
-        <h3 class="text-center pt-3">{{ health }} %</h3>
+        <h3 class="text-center pt-3">{{ users[1].health }} %</h3>
         <div class="health-bar" style="right: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${getStatus(health)} rounded`"
+              :class="`progress-bar bg-${getStatus(users[1].health)} rounded`"
               role="progressbar"
-              :style="`width: ${health}%;`"
-              :aria-valuenow="health"
+              :style="`width: ${users[1].health}%;`"
+              :aria-valuenow="users[1].health"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -89,39 +89,22 @@ export default {
   data () {
     return {
       isPressed: false,
-      health: null,
-      playerA: null,
-      playerB: null
-    }
-  },
-  computed: {
-    status () {
-      const { playerA } = this.players
-      return {
-        playerA: this.getStatus(playerA.health),
-        playerB: this.getStatus(this.health)
-      }
-    },
-    players () {
-      return {
-        playerA: {
-          name: 'Arnold',
-          health: 70
-        },
-        playerB: {
-          name: 'Rian',
-          health: 100
-        }
-      }
+      username: '',
+      users: [{username: '', health: 100}, {username: '', health: 100}]
     }
   },
   created () {
+    this.username = localStorage.getItem('username')
+    const payload = {
+        username: this.username,
+        health: 100
+      }
+    this.$socket.emit('userConnect', payload)
     window.addEventListener('keydown', e => {
       e.preventDefault()
 
       if (!this.isPressed) {
-        this.isPressed = true
-
+        console.log(e.keyCode)
         if (e.keyCode === 32) {
           this.hit()
         }
@@ -130,8 +113,9 @@ export default {
 
     window.addEventListener('keyup', e => {
       e.preventDefault()
-
-      this.isPressed = false
+      if (e.keyCode === 32) {
+        this.isPressed = false
+      }
     })
   },
   methods: {
@@ -146,27 +130,23 @@ export default {
 
       return 'danger'
     },
-    hit () {
+    hit (payload) {
       this.isPressed = true
-      setTimeout(() => {
-        this.isPressed = false
-      }, 500)
-      this.$socket.emit('sendHealth')
+      console.log(this.username)
+      console.log(this.users)
+      let temp = this.users.filter(el => {
+        return el.username == this.username
+      })
+      this.$socket.emit('sendHealth', temp[0])
     }
   },
   sockets: {
     userConnect (data) {
-      this.playerA = {
-        name: data.users[0].name,
-        health: data.health
-      },
-      this.playerB = {
-        name: data.users[1].name,
-        health: data.health
-      }
+      this.users = data
     },
     sendHealth (data) {
-      this.health = data
+      console.log(data, '<<<<<MASUK DARI SENDHEALTH BOARDVUEEEEEEEEEEEE>>>>>')
+      this.users = data
     }
   }
 }

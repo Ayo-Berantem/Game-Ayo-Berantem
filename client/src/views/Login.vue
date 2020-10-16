@@ -26,10 +26,11 @@ export default {
   },
   methods: {
     submitUsername () {
-      const paylaod = {
-        username: this.username
+      const payload = {
+        username: this.username,
+        health: 100
       }
-      this.$socket.emit('userConnect', paylaod)
+      this.$socket.emit('userConnect', payload)
       localStorage.setItem('username', this.username)
       this.$router.push({ name: 'Home' })
     }

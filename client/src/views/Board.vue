@@ -29,7 +29,7 @@
                 {{ players.playerA.name }}
               </h1>
 
-              <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
+              <img src="../assets/logo.png" alt="profile" :class="`rounded img-thumbnail my-5 ${hitAnimation}`">
 
               <button
                 class="btn btn-outline-info btn-lg btn-block"
@@ -103,6 +103,11 @@ export default {
           health: 100
         }
       }
+    },
+    hitAnimation () {
+      const animations = ['vibrate-3', 'heartbeat', 'shake-horizontal', 'blink-1']
+      const randomAnimation = animations[Math.floor(Math.random() * animations.length)]
+      return this.isPressed ? randomAnimation : ''
     }
   },
   created () {

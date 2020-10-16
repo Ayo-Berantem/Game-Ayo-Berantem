@@ -30,6 +30,9 @@ io.on('connection', (socket) => {
   socket.on('sendHealth', (data) => {
     users.map(el => {
       if (el.username != data.username) {
+        if (el.health === 0) {
+          io.emit('PLAYER_WIN', data.username)
+        }
         el.health = el.health - 1
       }
     })

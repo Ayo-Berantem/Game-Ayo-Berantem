@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import Board from '../views/Board.vue'
-
 
 Vue.use(VueRouter)
 
@@ -11,7 +9,10 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    // component: Home,
+    redirect: {
+      name: 'Login'
+    }
   },
   {
     path: '/login',
@@ -29,7 +30,16 @@ const routes = [
   {
     path: '/board',
     name: 'Board',
-    component: Board
+    component: () => import('../views/Board.vue'),
+    beforeEnter(to, from, next) {
+      if (localStorage.getItem('username')) {
+        next()
+      } else {
+        next({
+          name: 'Login'
+        });
+      }
+    }
   }
 ]
 

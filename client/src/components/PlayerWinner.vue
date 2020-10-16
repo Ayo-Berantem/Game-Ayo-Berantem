@@ -21,6 +21,7 @@ export default {
     goToLogin() {
       localStorage.removeItem('username')
       this.$router.push({ name: 'Login' })
+      this.$socket.emit('resetUser')
     }
   },
 }

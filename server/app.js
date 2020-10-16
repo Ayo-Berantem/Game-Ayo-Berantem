@@ -38,6 +38,10 @@ io.on('connection', (socket) => {
     })
     io.emit('sendHealth', users)
   })
+
+  socket.on('resetUser', () => {
+    users = []
+  })
 })
 
 http.listen(port, () => console.log(`I love you ${port}`))

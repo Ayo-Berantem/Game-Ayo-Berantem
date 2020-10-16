@@ -7,7 +7,7 @@
         <div class="health-bar" style="left: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${status.playerA} rounded`"
+              :class="`progress-bar bg-${getStatus(players.playerA.health)} rounded`"
               role="progressbar"
               :style="`width: ${players.playerA.health}%;`"
               :aria-valuenow="players.playerA.health"
@@ -68,7 +68,7 @@
         <div class="health-bar" style="right: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${status.playerB} rounded`"
+              :class="`progress-bar bg-${getStatus(players.playerB.health)} rounded`"
               role="progressbar"
               :style="`width: ${players.playerB.health}%;`"
               :aria-valuenow="players.playerB.health"
@@ -92,13 +92,6 @@ export default {
     }
   },
   computed: {
-    status () {
-      const { playerA, playerB } = this.players
-      return {
-        playerA: this.getStatus(playerA.health),
-        playerB: this.getStatus(playerB.health)
-      }
-    },
     players () {
       return {
         playerA: {
@@ -107,18 +100,28 @@ export default {
         },
         playerB: {
           name: 'Rian',
-          health: 10
+          health: 100
         }
       }
     }
   },
   created () {
-    window.addEventListener('keydown', e => {
+    window.addEventListener("keydown", e => {
       e.preventDefault()
 
-      if (e.keyCode === 32) {
-        this.hit()
+      if(!this.isPressed){
+        this.isPressed = true
+
+        if (e.keyCode === 32) {
+          this.hit()
+        }
       }
+    })
+
+    window.addEventListener("keyup", e => {
+      e.preventDefault()
+
+      this.isPressed = false
     })
   },
   methods: {
@@ -134,11 +137,9 @@ export default {
       return 'danger'
     },
     hit () {
-      this.isPressed = true
-
-      setTimeout(() => {
-        this.isPressed = false
-      }, 500)
+      if (this.isPressed) {
+        this.players.playerB.health--
+      }
     }
   }
 }

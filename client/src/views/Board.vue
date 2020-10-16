@@ -106,12 +106,22 @@ export default {
     }
   },
   created () {
-    window.addEventListener('keydown', e => {
+    window.addEventListener("keydown", e => {
       e.preventDefault()
 
-      if (e.keyCode === 32) {
-        this.hit()
+      if(!this.isPressed){
+        this.isPressed = true
+
+        if (e.keyCode === 32) {
+          this.hit()
+        }
       }
+    })
+
+    window.addEventListener("keyup", e => {
+      e.preventDefault()
+
+      this.isPressed = false
     })
   },
   methods: {
@@ -127,15 +137,9 @@ export default {
       return 'danger'
     },
     hit () {
-      this.isPressed = true
-
       if (this.isPressed) {
         this.players.playerB.health--
       }
-
-      setTimeout(() => {
-        this.isPressed = false
-      }, 500)
     }
   }
 }

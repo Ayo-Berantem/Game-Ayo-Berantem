@@ -26,6 +26,11 @@ const routes = [
     component: Login
   },
   {
+    path: '/winner',
+    name: 'Winner',
+    component: () => import('../components/PlayerWinner.vue'),
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

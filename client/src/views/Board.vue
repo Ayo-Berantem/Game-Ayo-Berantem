@@ -92,8 +92,7 @@ export default {
   data () {
     return {
       isPressed: false,
-      username: '',
-      users: [{username: '', health: 100}, {username: '', health: 100}]
+      username: ''
     }
   },
   created () {
@@ -121,6 +120,11 @@ export default {
       }
     })
   },
+  computed: {
+    users () {
+      return this.$store.state.users
+    }
+  },
   methods: {
     getStatus (number) {
       if (number > 40) {
@@ -135,21 +139,13 @@ export default {
     },
     hit (payload) {
       this.isPressed = true
-      console.log(this.username)
+
       console.log(this.users)
+
       let temp = this.users.filter(el => {
         return el.username == this.username
       })
       this.$socket.emit('sendHealth', temp[0])
-    }
-  },
-  sockets: {
-    userConnect (data) {
-      this.users = data
-    },
-    sendHealth (data) {
-      console.log(data, '<<<<<MASUK DARI SENDHEALTH BOARDVUEEEEEEEEEEEE>>>>>')
-      this.users = data
     }
   }
 }

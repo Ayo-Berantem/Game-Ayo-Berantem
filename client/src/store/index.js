@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    players: [],
+    users: [{ username: '', health: 100 }, { username: '', health: 100 }],
     isRoomFull: false
   },
   mutations: {
@@ -18,6 +18,15 @@ export default new Vuex.Store({
     },
     'SOCKET_SEND_LEFT_ROOM' () {
       router.push({ name: 'Login' })
+    },
+    'SOCKET_PLAYER_WIN' (state, payload) {
+      router.push({ name: 'Winner', params: { username: payload } })
+    },
+    'SOCKET_userConnect'(state, data) {
+      state.users = data
+    },
+    'SOCKET_sendHealth' (state, data) {
+      state.users = data
     }
   },
   actions: {

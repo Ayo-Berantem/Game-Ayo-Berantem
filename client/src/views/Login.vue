@@ -18,25 +18,6 @@
 
 <script>
 export default {
-<<<<<<< HEAD
-  name: "Login",
-  data() {
-    return {
-      username: "",
-    };
-  },
-  methods: {
-    submitUsername() {
-      const paylaod = {
-        username: this.username,
-      };
-      this.$socket.emit("user-connect", paylaod);
-      localStorage.setItem("username", this.username);
-      this.$router.push({ name: "Home" });
-    },
-  },
-};
-=======
   name: 'Login',
   data () {
     return {
@@ -51,11 +32,10 @@ export default {
       }
       this.$socket.emit('userConnect', payload)
       localStorage.setItem('username', this.username)
-      this.$router.push({ name: 'Home' })
+      this.$router.push({ name: "Board" })
     }
   }
 }
->>>>>>> 23a4d2537d4f1df8d487bbf66eebd7b750dbd3c3
 </script>
 
 <style>

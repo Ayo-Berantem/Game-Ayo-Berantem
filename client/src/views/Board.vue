@@ -7,7 +7,7 @@
         <div class="health-bar" style="left: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${status.playerA} rounded`"
+              :class="`progress-bar bg-${getStatus(players.playerA.health)} rounded`"
               role="progressbar"
               :style="`width: ${players.playerA.health}%;`"
               :aria-valuenow="players.playerA.health"
@@ -26,7 +26,7 @@
 
             <div class="col-4 text-center">
               <h1>
-                {{ players.playerA.name }}
+                {{ playerA.name }}
               </h1>
 
               <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
@@ -46,7 +46,7 @@
             </div>
             <div class="col-4 text-center">
               <h1>
-                {{ players.playerB.name }}
+                {{ playerB.name }}
               </h1>
 
               <img src="../assets/logo.png" alt="profile" class="rounded img-thumbnail my-5">
@@ -68,7 +68,7 @@
         <div class="health-bar" style="right: -200px;">
           <div class="progress">
             <div
-              :class="`progress-bar bg-${status.playerB} rounded`"
+              :class="`progress-bar bg-${getStatus(health)} rounded`"
               role="progressbar"
               :style="`width: ${health}%;`"
               :aria-valuenow="health"
@@ -89,7 +89,9 @@ export default {
   data () {
     return {
       isPressed: false,
-      health: null
+      health: null,
+      playerA: null,
+      playerB: null
     }
   },
   computed: {
@@ -108,7 +110,7 @@ export default {
         },
         playerB: {
           name: 'Rian',
-          health: 10
+          health: 100
         }
       }
     }
@@ -117,9 +119,19 @@ export default {
     window.addEventListener('keydown', e => {
       e.preventDefault()
 
-      if (e.keyCode === 32) {
-        this.hit()
+      if (!this.isPressed) {
+        this.isPressed = true
+
+        if (e.keyCode === 32) {
+          this.hit()
+        }
       }
+    })
+
+    window.addEventListener('keyup', e => {
+      e.preventDefault()
+
+      this.isPressed = false
     })
   },
   methods: {
@@ -143,6 +155,16 @@ export default {
     }
   },
   sockets: {
+    userConnect (data) {
+      this.playerA = {
+        name: data.users[0].name,
+        health: data.health
+      },
+      this.playerB = {
+        name: data.users[1].name,
+        health: data.health
+      }
+    },
     sendHealth (data) {
       this.health = data
     }

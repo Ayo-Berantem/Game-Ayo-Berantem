@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    
   },
   mutations: {
+    'SOCKET_GETUSER' (data) {
+      console.log(data)
+    }
   },
   actions: {
   },

@@ -10,11 +10,21 @@ app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
-let health = 100
+let health = null
+let users = []
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.on('sendHealth', () => {
+
+  socket.on('userConnect', (data)=>{
+    console.log('someone connected');
+    console.log(data);
+    users.push(data)
+    let payload = {users, health: 100}
+    io.emit('userConnect', payload)
+})
+
+  socket.on('sendHealth', (data) => {
     health -= 1
     io.emit('sendHealth', health)
   })
